@@ -20,6 +20,9 @@ pipeline {
         // ── Credentials ───────────────────────────────────────────────
         DOCKER_CREDS_ID    = "docker-home"      // Jenkins cred ID for Docker Hub
         GITHUB_CREDS_ID    = "github-home"      // Jenkins cred ID for GitHub
+
+        // Ensure local bin is in PATH so the downloaded docker CLI works in all stages
+        PATH               = "${HOME}/.local/bin:${env.PATH}"
     }
 
     options {
@@ -35,14 +38,28 @@ pipeline {
 
     stages {
 
-        // ── 0. DOCKER SETUP & PERMISSIONS ─────────────────────────────
-        stage('Docker Permissions Check') {
+        // ── 0. DOCKER SETUP ───────────────────────────────────────────
+        stage('Docker Setup') {
             steps {
-                echo "▶ Checking Docker CLI..."
+                echo "▶ Checking for Docker CLI..."
                 script {
                     sh '''
-                        # The pipeline cannot install Docker itself because it doesn't have 'sudo' or root access.
-                        # If this fails, you must install Docker CLI on the Jenkins host manually.
+                        mkdir -p $HOME/.local/bin
+                        export PATH="$HOME/.local/bin:$PATH"
+                        
+                        # If docker is not found, download the static binary without sudo
+                        if ! command -v docker >/dev/null 2>&1; then
+                            echo "⚠️ Docker CLI not found. Downloading static binary..."
+                            curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-24.0.7.tgz -o docker.tgz
+                            tar xzvf docker.tgz
+                            mv docker/docker $HOME/.local/bin/
+                            rm -rf docker docker.tgz
+                            echo "✅ Docker CLI installed to $HOME/.local/bin"
+                        else
+                            echo "✅ Docker CLI already available."
+                        fi
+
+                        # Verify we can connect to the Docker daemon
                         docker version
                     '''
                 }
