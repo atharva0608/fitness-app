@@ -35,6 +35,22 @@ pipeline {
 
     stages {
 
+        // ── 0. DOCKER SETUP & PERMISSIONS ─────────────────────────────
+        stage('Docker Permissions') {
+            steps {
+                echo "▶ Checking Docker CLI and fixing socket permissions..."
+                script {
+                    // Try to fix permissions for the Docker socket (Windows/Linux paths)
+                    // Using || true so the pipeline doesn't fail if it lacks sudo/root
+                    sh "sudo chmod 666 //var/run/docker.sock || chmod 666 //var/run/docker.sock || true"
+                    sh "sudo chmod 666 /var/run/docker.sock || chmod 666 /var/run/docker.sock || true"
+                    
+                    // Verify Docker CLI is installed and can connect to the daemon
+                    sh "docker version"
+                }
+            }
+        }
+
         // ── 1. CHECKOUT ───────────────────────────────────────────────
         stage('Checkout') {
             steps {
