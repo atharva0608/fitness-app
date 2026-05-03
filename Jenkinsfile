@@ -36,17 +36,27 @@ pipeline {
     stages {
 
         // ── 0. DOCKER SETUP & PERMISSIONS ─────────────────────────────
-        stage('Docker Permissions') {
+        stage('Docker Setup & Permissions') {
             steps {
                 echo "▶ Checking Docker CLI and fixing socket permissions..."
                 script {
-                    // Try to fix permissions for the Docker socket (Windows/Linux paths)
-                    // Using || true so the pipeline doesn't fail if it lacks sudo/root
-                    sh "sudo chmod 666 //var/run/docker.sock || chmod 666 //var/run/docker.sock || true"
-                    sh "sudo chmod 666 /var/run/docker.sock || chmod 666 /var/run/docker.sock || true"
-                    
-                    // Verify Docker CLI is installed and can connect to the daemon
-                    sh "docker version"
+                    sh '''
+                        # Install Docker CLI if not present
+                        if ! command -v docker >/dev/null 2>&1; then
+                            echo "⚠️ Docker CLI not found. Installing..."
+                            sudo apt-get update
+                            sudo apt-get install -y docker.io
+                        else
+                            echo "✅ Docker CLI already installed."
+                        fi
+
+                        # Try to fix permissions for the Docker socket (Windows/Linux paths)
+                        sudo chmod 666 //var/run/docker.sock || chmod 666 //var/run/docker.sock || true
+                        sudo chmod 666 /var/run/docker.sock || chmod 666 /var/run/docker.sock || true
+                        
+                        # Verify Docker CLI can connect to the daemon
+                        docker version
+                    '''
                 }
             }
         }
