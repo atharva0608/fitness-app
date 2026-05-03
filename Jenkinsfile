@@ -17,8 +17,9 @@ pipeline {
         FRONTEND_HOST_PORT = "5173"
         BACKEND_HOST_PORT  = "3000"
 
-        // ── Credentials (set in Jenkins → Manage → Credentials) ───────
-        DOCKER_CREDS_ID    = "docker-hub-creds"
+        // ── Credentials ───────────────────────────────────────────────
+        DOCKER_CREDS_ID    = "docker-home"      // Jenkins cred ID for Docker Hub
+        GITHUB_CREDS_ID    = "github-home"      // Jenkins cred ID for GitHub
     }
 
     options {
@@ -39,7 +40,7 @@ pipeline {
             steps {
                 echo "▶ Checking out staging branch..."
                 git branch: 'staging',
-                    credentialsId: 'github-creds',        // optional if public repo
+                    credentialsId: "${GITHUB_CREDS_ID}",
                     url: 'https://github.com/atharva0608/fitness-app.git'
             }
         }
@@ -70,10 +71,10 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: "${DOCKER_CREDS_ID}",
-                    usernameVariable: 'USERNAME',
-                    passwordVariable: 'PASSWORD'
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh 'echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin'
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                 }
             }
         }
