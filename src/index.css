@@ -1,0 +1,244 @@
+:root {
+  --bg-primary: #080810;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #475569;
+
+  --color-push: #f97316;
+  --color-pull: #06b6d4;
+  --color-legs: #10b981;
+  --color-rest: #8b5cf6;
+
+  --accent-glow: rgba(249, 115, 22, 0.4);
+
+  --page-pad: 16px;
+  --nav-h: 72px; /* bottom nav height */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* prevent iOS text size adjustment on rotate */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  /* bottom nav clearance */
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  /* larger tap target on mobile */
+  min-height: 44px;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  background: var(--bg-primary);
+  border: 1px solid var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+  /* prevent iOS zoom on focus */
+  font-size: 16px;
+}
+
+input:focus {
+  border-color: var(--color-push);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* ── Glassmorphism ───────────────────────────────────── */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ── Layout ──────────────────────────────────────────── */
+.container {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: var(--page-pad);
+}
+
+/* Page root — full width, padding on all sides */
+.page-root {
+  padding: 16px var(--page-pad) 0;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Responsive grid helpers ─────────────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── 30-day calendar grid ────────────────────────────── */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+@media (max-width: 420px) {
+  .calendar-grid {
+    gap: 4px;
+  }
+}
+
+/* ── Exercise / loggable rows ────────────────────────── */
+.set-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 380px) {
+  .set-row {
+    grid-template-columns: 1fr 1fr auto;
+    gap: 6px;
+  }
+}
+
+/* ── Workout card header ─────────────────────────────── */
+.workout-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Typography ──────────────────────────────────────── */
+.page-title {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 800;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ── Stat cards ──────────────────────────────────────── */
+.stat-card {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid var(--bg-tertiary);
+}
+
+/* ── Scrollable horizontal areas ────────────────────── */
+.h-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Dashboard stats row ─────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.stats-row::-webkit-scrollbar { display: none; }
+.stats-row > * { flex: 0 0 auto; }
+
+/* ── Body map wrapper ────────────────────────────────── */
+.bodymap-wrap {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Form rows ───────────────────────────────────────── */
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.form-row > * { flex: 1 1 120px; }
+
+/* ── Week day selector ───────────────────────────────── */
+.week-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.week-bar::-webkit-scrollbar { display: none; }
+.week-bar > * { flex: 0 0 auto; }
+
+/* ── Navigation safe area ────────────────────────────── */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 15, 15, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--bg-tertiary);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 200;
+}

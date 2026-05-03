@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    image: atharva0608/fitness-app-frontend:latest
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+
+  api:
+    build: ./backend
+    image: atharva0608/fitness-app-backend:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - db_data:/data
+    environment:
+      - NODE_ENV=development
+      - DB_PATH=/data/fitness.db
+
+volumes:
+  db_data:
