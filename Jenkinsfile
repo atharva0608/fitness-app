@@ -36,25 +36,13 @@ pipeline {
     stages {
 
         // ── 0. DOCKER SETUP & PERMISSIONS ─────────────────────────────
-        stage('Docker Setup & Permissions') {
+        stage('Docker Permissions Check') {
             steps {
-                echo "▶ Checking Docker CLI and fixing socket permissions..."
+                echo "▶ Checking Docker CLI..."
                 script {
                     sh '''
-                        # Install Docker CLI if not present
-                        if ! command -v docker >/dev/null 2>&1; then
-                            echo "⚠️ Docker CLI not found. Installing..."
-                            sudo apt-get update
-                            sudo apt-get install -y docker.io
-                        else
-                            echo "✅ Docker CLI already installed."
-                        fi
-
-                        # Try to fix permissions for the Docker socket (Windows/Linux paths)
-                        sudo chmod 666 //var/run/docker.sock || chmod 666 //var/run/docker.sock || true
-                        sudo chmod 666 /var/run/docker.sock || chmod 666 /var/run/docker.sock || true
-                        
-                        # Verify Docker CLI can connect to the daemon
+                        # The pipeline cannot install Docker itself because it doesn't have 'sudo' or root access.
+                        # If this fails, you must install Docker CLI on the Jenkins host manually.
                         docker version
                     '''
                 }
